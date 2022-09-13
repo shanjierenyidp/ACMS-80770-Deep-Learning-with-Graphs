@@ -34,7 +34,8 @@ A = nx.adjacency_matrix(G)
 S = np.zeros_like(A.todense(), dtype=float)
 for i in range(A.shape[0]):
     for j in range(A.shape[0]):
-        S[i,j] = np.array((sum(A[:,i].multiply(A[:,j])) / len((A[:,i]+A[:,j]).nonzero()[0])).todense())[0][0]
+        S[i,j] = np.array((sum(A[:,i].multiply(A[:,j])) 
+                / len((A[:,i]+A[:,j]).nonzero()[0])).todense())[0][0]
 
 Ginori_dict = {}
 for i, nodei in enumerate(nodes):
@@ -94,4 +95,4 @@ nx.draw_networkx_edges(G, edgelist=new_edges, pos=layout, edge_color='gray', wid
 ne = nx.draw_networkx_edges(G, edgelist=new_edges, pos=layout, edge_color=np.asarray(metric), width=4, alpha=0.7)
 plt.colorbar(ne)
 plt.axis('off')
-plt.savefig('similarity.png')
+plt.savefig('./similarity.png')
