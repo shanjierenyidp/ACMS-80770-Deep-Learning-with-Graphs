@@ -56,13 +56,14 @@ prop = torch.stack(list(map(target, dataset)))[:, 5].to(device)
 
 
 
-class GCN:
+class GCN(nn.Module):
     """
         Graph convolutional layer
     """
     def __init__(self, in_features, out_features):
+        super(GCN, self).__init__()
         # -- initialize weight
-        self.W = torch.nn.Parameter(torch.rand((in_features, out_features))*0.01, requires_grad=True).type(torch.DoubleTensor).to(device)
+        self.W = nn.Parameter(torch.rand((in_features, out_features))*0.01, requires_grad=True).type(torch.DoubleTensor).to(device)
 
         # -- non-linearity
 
