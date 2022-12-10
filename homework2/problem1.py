@@ -19,7 +19,7 @@ from torch.nn.modules.module import Module
 from tqdm import tqdm
 """
     load data
-"""
+""" 
 print('loading data')
 dataset, dataset_smiles = mydataset.get_qm9(GGNNPreprocessor(kekulize=True), return_smiles=True,
                                             target_index=np.random.choice(range(133000), 6000, False))
