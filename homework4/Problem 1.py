@@ -25,10 +25,6 @@ class kernel:
         self.lamb_max = torch.tensor(lamb_max)
 
         # -- Half-Cosine kernel
-        # self.a = ...
-        # self.g_hat = lambda lamb: ...
-        
-        # dialiation factor 
         self.a = self.R*np.log10(self.lamb_max.detach().numpy())/(self.J-self.R+1)
         self.g_hat = lambda lamb:sum([ele*np.cos(2*np.pi*k*(lamb/self.a+0.5))*1*(-lamb>=0 and -lamb<self.a) for k,ele in enumerate(self.d)])
 
@@ -41,6 +37,13 @@ class kernel:
         """
         # compute filter at this sacle:
         assert(j>=2 and J<=self.J), 'j must be between [2,J]'
+        
+        # calculate critical value 
+        lamb_star = 10**(self.a*((j-1)/self.R-1))
+        if  lamb < lamb_star:
+            # print(lamb)
+            lamb = lamb_star
+            
         return self.g_hat(np.log10(lamb) - self.a*(j-1)/self.R)
     
     def scaling(self, lamb):
