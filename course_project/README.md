@@ -1,13 +1,34 @@
-<!-- Dependencies: -->
-pytorch with cuda 
-pytorch geometric
-SU2 solver:
-    swig --> for python wrapper
-    openmpi --> mpi
-pyvista --> geometry manipulation
-tqdm --> progress indicator in for loop 
+CFD-GCN hybrid solver project
+======================================
 
-<!-- install commands -->
+The project creates a hybrid solver that predicts hemodynamic flow information given random inlet profiles for a 2-D arotic flow case.
+
+## Getting Started
+
+### Dependencies
+
+This implementation requires:
+
+* Python (= 3.7)
+* SciPy (>= 1.4.1)
+* PyParsing (>= 1.1)
+* PyTorch (= 1.5.0)
+* NumPy (>= 1.18.1)
+* Matplotlib (>= 3.1.1)
+* torch-scatter==2.0.5
+* torch-sparse==0.6.6
+* torch-cluster==1.5.5
+* torch-spline-conv==1.2.0
+* torch-geometric==1.6.0 
+* swig (>=3.0)
+* mpicc
+* mpi4py
+* cudatoolkit=10.1
+### Installation
+
+After downloading the code, you may install it by running
+
+```bash
 ###########install pytorch and pytorch geometric########################################
 #create conda enviroment
 conda create -n cfd-gcn python=3.7
@@ -24,6 +45,7 @@ pip install torch-cluster==1.5.5 -f https://pytorch-geometric.com/whl/torch-1.5.
 pip install torch-spline-conv==1.2.0 -f https://pytorch-geometric.com/whl/torch-1.5.0+cu101.html
 pip install torch-geometric==1.6.0 -f https://pytorch-geometric.com/whl/torch-1.5.0+cu101.html
 
+###########install SU2########################################
 #assuming your in the current path = your-own-path
 apt-get update -y && apt-get install -y openmpi-bin libopenmpi-dev swig m4
 env MPICC=/usr/bin/mpicc pip install mpi4py
@@ -41,23 +63,57 @@ export PATH=$PATH:your-own-path/su2install/SU2/bin
 export PYTHONPATH=$PYTHONPATH:your-own-path/su2install/SU2/bin
 export SU2_RUN=your-own-path/su2install/SU2/bin
 export SU2_HOME=your-own-path/SU2
+```
+
+### Data
+
+Data samples are generated through `./data/cases/data_generation.py` The script accepts the following arguments: no arguments
+num_cases = 2000 represent how many data you wanna generate and is hard coded inside the python file. 
 
 
-<!-- run result -->
+and then through `./data.py`. The script accepts the following arguments:
+```bash
+--root    root directory of the cases files 
+-d 	  output directory of the graph dataset files 
+-fm       fine mesh file name for the graph dataset 
+-ts       total size of the graph dataset
 
-#activate the conda enviroment cfd-gcn
-git clone https://github.com/shanjierenyidp/CFD_GCN.git
-cd CFD-GCN
+```
+
+#Run this to generate the data 
+```bash
 conda activate cfd-gcn
-#run this to convert simulation to graphs
-cd project-fold-path
+cd ./data/cases
+python data_generation.py > log
+cd ..
+cd ..
 python data.py --root './data/cases' -d './data/dataset0' -fm './data/aorta3.su2' -ts 2000
+```
 
-# run this to run the experiment
-## Data:
-#you need to download the data from google drive via this link, please download it and unzip it as data folder. 
-https://drive.google.com/file/d/1VTnuxaQXppp2mKpLFD9KJ86RL1zCWYQf/view?usp=sharing
-## experiments 
-#then start runing the experiments:
+## Run
+
+### Training
+
+The model is trained using `./train.py`. This code accepts the following arguments: 
+```bash
+-np   number of process for the training step. should batchsize+1
+```
+
+After generating the data, run
+
+```bash
 mpirun -np 5 python train.py > log
-#note that the np = 5 = batch_size + 1 
+```
+
+to train the base model.
+
+### Plotting
+
+run this to visualize the predictions :
+```bash
+python plot.py
+```
+
+
+
+
