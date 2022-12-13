@@ -240,6 +240,7 @@ latent = pca.fit_transform(S)
 # -- plot feature space
 plt.close('all')
 plt.scatter(latent[:,0], latent[:,1], c=data.prop_2)
+plt.colorbar()
 plt.savefig('./Homework4/latent_plot.png')
 # torch.save(S,'S_tensor.pt')
 
