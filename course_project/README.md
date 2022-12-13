@@ -66,7 +66,10 @@ export SU2_HOME=your-own-path/SU2
 ```
 
 ### Data
+After download the project code, you need to download the data folder from google drivelink:
+https://drive.google.com/file/d/1VTnuxaQXppp2mKpLFD9KJ86RL1zCWYQf/view?usp=sharing
 
+Inside the data folder:
 Data samples are generated through `./data/cases/data_generation.py` The script accepts the following arguments: no arguments
 num_cases = 2000 represent how many data you wanna generate and is hard coded inside the python file. 
 
