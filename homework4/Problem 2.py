@@ -225,6 +225,7 @@ scat = scattering(L=2, V=9, d_f=5, K=1, R=3, d=[0.5, 0.5], J=8, lamb_max=2)
 
 # -- load data
 data_size = 6000
+# data_size = 6000
 data = MolecularDataset(N=data_size)
 # print(data[0][1].size())
 # -- Compute scattering feature maps
@@ -366,15 +367,20 @@ class My_Dataset(Dataset):
     
 batch_size = 500
 device = 'cuda'
-train_size = 5000 # data_size = 6000
-test_size = 1000
+train_size = 5000 # data_size =5000
+test_size = 1000 # 1000
 train_data = {'inputs': My_inputs[:train_size],'outputs': My_outputs[:train_size]}
 test_data = {'inputs': My_inputs[-test_size:],'outputs': My_outputs[-test_size:]}
-train_dataset = My_Dataset(train_data['inputs'],train_data['outputs'])
-test_dataset = My_Dataset(test_data['inputs'],test_data['outputs'])
+
+print(My_inputs.size(),My_outputs.size()) # input size torch.Size([6000, 365]) output size torch.Size([6000])
+train_dataset = My_Dataset(train_data['inputs'],train_data['outputs'].unsqueeze(1))
+test_dataset = My_Dataset(test_data['inputs'],test_data['outputs'].unsqueeze(1))
 train_loader = DataLoader(train_dataset, batch_size=batch_size,shuffle=True, num_workers=0)
 test_loader = DataLoader(test_dataset, batch_size=1,shuffle=True, num_workers=0)
 
+
+# import sys
+# sys.exit('debug')
 
 ## check normalization 
 # rec_prediction = input_normalizer.denormalize(input_normalizer.normalize(train_data['inputs']))
@@ -410,6 +416,8 @@ def train(model, device, train_loader, optimizer, criterion, scheduler = None):
         inputs,labels = inputs.to(device), labels.to(device)
         optimizer.zero_grad()
         outputs = model(inputs)
+        # print('pan debug output size:', outputs.size())
+        # print('pan debug label size:', labels.size())
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
@@ -436,7 +444,7 @@ print(model)
 lr = 0.0001
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(),lr=lr,weight_decay=0.001)
-epoches = 2000
+epoches = 2000 #2000
 
 ##############################################################################################
 train_ins_error = []
